@@ -27,6 +27,10 @@ module.exports = {
         getUsers((error, results) => {
             if (error) {
                 console.log(error);
+                res.status(500).json({
+                    success: 0,
+                    message: "Failed to get records..."
+                })
                 return;
             } else {
                 return res.json({
@@ -100,6 +104,10 @@ module.exports = {
         getUserByEmail(body.email_address, (error, results) => {
             if (error) {
                 console.log(error);
+                return res.json({
+                    success: 0,
+                    message: "Unable to login at the moment..."
+                });
             } 
             if (!results) {
                 return res.json({
@@ -109,8 +117,8 @@ module.exports = {
             }
             
             // compare password
-            if (body.password === results.password) {
-                results.password = undefined;
+            if (body.password === results.user_password) {
+                results.user_password = undefined;
                 const jsonToken = sign({ result: results }, process.env.JSON_TOKEN, {
                     expiresIn: expire
                 });
