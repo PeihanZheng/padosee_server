@@ -1,6 +1,7 @@
 // import modules
 const { createPool } = require("mysql");
 const dotenv = require('dotenv');
+const fs = require('fs');
 
 // configure dotenv
 dotenv.config();
@@ -13,15 +14,13 @@ const pool = createPool({
     database: process.env.MYSQL_DB,
     port: process.env.MYSQL_PORT,
     connectionLimit: 100,
-    ssl: {
-        rejectUnauthorized: true,
-        ca: process.env.MYSQL_CA
-    }
+    ssl: false
 });
 
 // connect to database
 pool.getConnection((error, connection) => {
     if (error) {
+        console.error(error);
         // check for connection errors
         if (error.code === 'PROTOCOL_CONNECTION_LOST') {
             console.error('Database connection was closed.');
