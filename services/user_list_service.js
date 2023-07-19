@@ -37,6 +37,26 @@ module.exports = {
             }
         });
     },
+    // method to verify user password
+    verifyPassword: (email, password, callback) => {
+        pool.query("SELECT * FROM user_list WHERE email_address = ?", [email], (error, results, fields) => {
+            if (error) {
+                return callback(error);
+            } 
+            if (results.length === 0) {
+                return callback(null, false); // user not found
+            }
+
+            // compare the password
+            const user = results[0];
+            console.log(user);
+            if (user.user_password === password) {
+                return callback(null, user);
+            } else {
+                return callback(null, false);
+            }
+        });
+    },
     deleteUser: (id, callback) => {
         pool.query("DELETE FROM user_list WHERE user_id = ?", [id], (error, results, fields) => {
             if (error) {
