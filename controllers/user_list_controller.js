@@ -77,6 +77,76 @@ module.exports = {
             }
         });
     },
+    // method to update user password
+    updateUserPassword: (req, res) => {
+        // get user id from params
+        const user_id = req.params.id;
+
+        // get request body
+        const { email_address, user_password, new_password } = req.body;
+
+        // check if request body is empty
+        if (req.body.constructor === Object && Object.keys(req.body).length === 0) {
+            return res.status(400).json({
+                success: 0,
+                message: "Request body is missing..."
+            });
+        }
+
+        // verify that user exists with email address
+        getUserByEmail(email_address, (error, results) => {
+            if (error) {
+                // error handling
+                console.error(error);
+                res.status(500).json({
+                    success: 0,
+                    message: "Error in sending request..."
+                })
+            } else {
+                // check if user exists
+                if (!results) {
+                    return res.status(400).json({
+                        success: 0,
+                        message: "User does not exist..."
+                    });
+                } else {
+                    // verify password
+                    verifyPassword(email_address, user_password, (error, results) => {
+                        if (error) {
+                            console.error(error);
+                            res.status(500).json({
+                                success: 0,
+                                message: "Error in password verification..."
+                            });
+                        } else {
+                            if (!results) {
+                                res.status(400).json({
+                                    success: 0,
+                                    message: "Invalid password..."
+                                });
+                            } else {
+                                // update user password
+                                updateUser(user_id, { user_password: new_password }, (error, results) => {
+                                    if (error) {
+                                        console.error(error);
+                                        res.status(500).json({
+                                            success: 0,
+                                            message: "Failed to update password..."
+                                        });
+                                    } else {
+                                        res.status(200).json({
+                                            success: 1,
+                                            message: "Password updated successfully!"
+                                        });
+                                    }
+                                });
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    },
     deleteUser: (req, res) => {
         const id = req.params.id;
         deleteUser(id, (error, results) => {
