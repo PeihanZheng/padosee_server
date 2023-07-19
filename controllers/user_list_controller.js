@@ -1,6 +1,7 @@
-const { create, getUsers, getUserById, updateUser, deleteUser, getUserByEmail } = require('../services/user_list_service.js');
+const { create, getUsers, getUserById, updateUser, verifyPassword, deleteUser, getUserByEmail } = require('../services/user_list_service.js');
 const { sign } = require("jsonwebtoken");
 const expire = 43200;
+const multer = require("multer");
 
 module.exports = {
     createUser: (req, res) => {
