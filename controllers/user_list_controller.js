@@ -2,6 +2,7 @@ const { create, getUsers, getUserById, updateUser, verifyPassword, deleteUser, g
 const { sign } = require("jsonwebtoken");
 const expire = 43200;
 const multer = require("multer");
+const bcrypt = require("bcrypt");
 
 module.exports = {
     createUser: (req, res) => {
@@ -186,20 +187,41 @@ module.exports = {
                     message: "Invalid email or password..."
                 });
             }
-            
-            // compare password
-            if (body.password === results.user_password) {
-                results.user_password = undefined;
-                const jsonToken = sign({ result: results }, process.env.JSON_TOKEN, {
-                    expiresIn: expire
-                });
-                return res.json({
-                    success: 1, 
-                    message: "Login successful!",
-                    accessToken: jsonToken,
-                    user: results
-                });
-            }
+
+            // decrypt password and compare using bcrypt
+            bcrypt.compare(body.user_password, results.user_password, (error, passwordMatch) => {
+                if (error) {
+                    console.error(error);
+                    return res.status(401).json({
+                        success: 0,
+                        message: "Unable to login at the moment..."
+                    });
+                }
+
+                // if successful, return json web token
+                if (passwordMatch) {
+                    // remove the hashed password from the results
+                    results.user_password = undefined;
+
+                    // create json web token
+                    const jsonWebToken = sign({ user: results }, process.env.JWT_KEY, {
+                        expiresIn: '4h'
+                    }); 
+
+                    // return success message
+                    return res.status(200).json({
+                        success: 1,
+                        message: "Login successful!",
+                        token: jsonWebToken,
+                        user: results
+                    });
+                } else {
+                    return res.status(401).json({
+                        success: 0,
+                        message: "Invalid email or password..."
+                    });
+                }
+            });
         });
     }
 };
