@@ -1,9 +1,21 @@
 const pool = require("../dao/padosee_dao.js");
 const fs = require("fs");
 const path = require("path");
+const bcrypt = require("bcrypt");
 
 module.exports = {
     create: (data, callback) => {
+        // hash the password
+        bcrypt.hash(data.user_password, 10, (error, hash) => {
+            if (error) {
+                return callback(error);
+            } else {
+                // replace the password with the hash
+                data.user_password = hash;
+            }
+        });
+
+        // sql query to insert data into user_list table
         pool.query(`INSERT INTO user_list SET ?`, [data], (error, results, fields) => {
             if (error) {
                 return callback(error);
