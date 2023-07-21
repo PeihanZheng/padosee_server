@@ -64,11 +64,14 @@ module.exports = {
             // compare the password
             const user = results[0];
             console.log(user);
-            if (user.user_password === password) {
-                return callback(null, user);
-            } else {
-                return callback(null, false);
-            }
+            bcrypt.compare(password, user.user_password, (error, passwordMatch) => {
+                if (error) {
+                    console.error(error);
+                    return callback(error);
+                } else {
+                    return callback(null, passwordMatch);
+                }
+            });
         });
     },
     deleteUser: (id, callback) => {
