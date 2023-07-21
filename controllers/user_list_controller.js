@@ -80,7 +80,7 @@ module.exports = {
         });
     },
     // method to update user password
-    updateUserPassword: (req, res) => {
+    updateUserPassword: async (req, res) => {
         // get user id from params
         const user_id = req.params.id;
 
@@ -103,7 +103,7 @@ module.exports = {
                 res.status(500).json({
                     success: 0,
                     message: "Error in sending request..."
-                })
+                });
             } else {
                 // check if user exists
                 if (!results) {
@@ -127,18 +127,30 @@ module.exports = {
                                     message: "Invalid password..."
                                 });
                             } else {
-                                // update user password
-                                updateUser(user_id, { user_password: new_password }, (error, results) => {
+                                // hash the new password
+                                bcrypt.hash(new_password, 10, (error, hash) => {
                                     if (error) {
                                         console.error(error);
                                         res.status(500).json({
                                             success: 0,
-                                            message: "Failed to update password..."
+                                            message: "Failed to hash password..."
                                         });
                                     } else {
-                                        res.status(200).json({
-                                            success: 1,
-                                            message: "Password updated successfully!"
+                                        // update user password
+                                        updateUser(user_id, { user_password: hash }, (error, results) => {
+                                            if (error) {
+                                                console.error(error);
+                                                res.status(500).json({
+                                                    success: 0,
+                                                    message: "Failed to update password..."
+                                                });
+                                            } else {
+                                                // return success message
+                                                res.status(200).json({
+                                                    success: 1,
+                                                    message: "Password updated successfully!"
+                                                });
+                                            }
                                         });
                                     }
                                 });
