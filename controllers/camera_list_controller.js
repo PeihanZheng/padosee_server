@@ -1,5 +1,5 @@
 // get pool query from service
-const { create, getCameras, getCameraById, updateCamera, deleteCamera } = require('../services/camera_list_service.js');
+const { create, getCameras, getCameraById, updateCamera, deleteCamera, getCameraByUserId ,getCameraByLocation} = require('../services/camera_list_service.js');
 
 // export controller
 module.exports = {
@@ -46,6 +46,47 @@ module.exports = {
 
         // get camera by id
         getCameraById(id, (error, results) => {
+            if (error) {
+                console.log(error);
+                return res.json({
+                    success: 0,
+                    message: "Record not found..."
+                });
+            } else {
+                return res.json({
+                    success: 1,
+                    data: results
+                });
+            }
+        });
+    },
+    getCameraByUserId: (req, res) => {
+        // access id from request
+        const id = req.params.id;
+
+        // get camera by id
+        getCameraByUserId(id, (error, results) => {
+            if (error) {
+                console.log(error);
+                return res.json({
+                    success: 0,
+                    message: "Record not found..."
+                });
+            } else {
+                return res.json({
+                    success: 1,
+                    data: results
+                });
+            }
+        });
+    },
+    getCameraByLocation: (req, res) => {
+        // access id from request
+        const id = req.params.id;
+        const location = req.params.location;
+
+        // get camera by id
+        getCameraByLocation(id,location, (error, results) => {
             if (error) {
                 console.log(error);
                 return res.json({
