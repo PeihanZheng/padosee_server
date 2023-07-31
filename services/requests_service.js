@@ -33,9 +33,29 @@ module.exports = {
             }
         });
     }, 
+    // get request by sender id
+    getRequestsBySenderId: (id, callback) => {
+        pool.query(`SELECT * FROM requests WHERE sender_id = ?`, [id], (error, results, fields) => {
+            if (error) {
+                return callback(error);
+            } else {
+                return callback(null, results);
+            }
+        });
+    },
+    // get request by receiver id
+    getRequestsByReceiverId: (id, callback) => {
+        pool.query(`SELECT * FROM requests WHERE receiver_id = ?`, [id], (error, results, fields) => {
+            if (error) {
+                return callback(error);
+            } else {
+                return callback(null, results);
+            }
+        });
+    },
     // update request
-    updateRequest: (data, callback) => {
-        pool.query(`UPDATE requests SET ? WHERE request_id = ?`, [data, data.request_id], (error, results, fields) => {
+    updateRequest: (id, data, callback) => {
+        pool.query(`UPDATE requests SET ? WHERE request_id = ?`, [data, id], (error, results, fields) => {
             if (error) {
                 return callback(error);
             } else {
