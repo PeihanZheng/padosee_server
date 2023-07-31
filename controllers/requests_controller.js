@@ -1,5 +1,5 @@
 // import pool queries from service
-const { create, getRequests, getRequestById, updateRequest, deleteRequest } = require('../services/requests_service');
+const { create, getRequests, getRequestById, getRequestsBySenderId, getRequestsByReceiverId, updateRequest, deleteRequest } = require('../services/requests_service');
 
 // export controller
 module.exports = {
@@ -50,9 +50,16 @@ module.exports = {
                 console.log(error);
                 res.status(500).json({
                     success: 0, 
+                    message: 'Error fetching records..'
+                });
+            } else if (!results) {
+                // not found message
+                res.status(404).json({
+                    success: 0, 
                     message: 'Record not found...'
                 });
             } else {
+                // success message
                 res.status(200).json({
                     success: 1, 
                     data: results
@@ -60,13 +67,72 @@ module.exports = {
             }
         });
     },
+    // get request by sender id
+    getRequestsBySenderId: (req, res) => {
+        // get params id
+        const id = req.params.id;
+
+        // use service method
+        getRequestsBySenderId(id, (error, results) => {
+            if (error) {
+                // handle error
+                console.log(error);
+                res.status(500).json({
+                    success: 0, 
+                    message: 'Error fetching records...'
+                });
+            } else if (results.length === 0) {
+                // not found message
+                res.status(404).json({
+                    success: 0, 
+                    message: 'Record not found...'
+                });
+            } else {
+                // success message
+                res.status(200).json({
+                    success: 1, 
+                    data: results
+                });
+            }
+        });
+    },
+    // get request by receiver id
+    getRequestsByReceiverId: (req, res) => {
+        // get id from params
+        const id = req.params.id;
+
+        // use service method
+        getRequestsByReceiverId(id, (error, results) => {
+            if (error) {
+                // handle error
+                console.log(error);
+                res.status(500).json({
+                    success: 0,
+                    message: 'Error fetching records...'
+                });
+            } else if (results.length === 0) {
+                res.status(404).json({
+                    success: 0, 
+                    message: 'Record not found...'
+                });
+            } else {
+                res.status(200).json({
+                    success: 1,
+                    data: results
+                });
+            }
+        });
+    },
     // update request
     updateRequest: (req, res) => {
+        // get id from params
+        const id = req.params.id;
+
         // get body of request
         const body = req.body;
 
         // use service method
-        updateRequest(body, (error, results) => {
+        updateRequest(id, body, (error, results) => {
             if (error) {
                 console.log(error);
                 res.status(500).json({
