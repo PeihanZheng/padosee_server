@@ -238,8 +238,9 @@ module.exports = {
     },
 
     getUsersByEmail: (req, res) => {
-        const email = req.params.email;
-        getUsersByEmail(email, (error, results) => {
+        const email = req.body.email;
+        const user_id = req.body.user_id;
+        getUsersByEmail(user_id,email, (error, results) => {
             if (error) {
                 console.log(error);
                 return res.json({

@@ -92,8 +92,8 @@ module.exports = {
             }
         })
     },
-    getUsersByEmail: (email, callback) => {
-        pool.query("SELECT * FROM user_list WHERE email_address = ?", [email], (error, results, fields) => {
+    getUsersByEmail: (user_id,email, callback) => {
+        pool.query("SELECT  DISTINCT * FROM user_list u LEFT JOIN (select * from requests where sender_id = ?) as rq ON u.user_id=rq.receiver_id WHERE u.email_address = ?", [user_id,email], (error, results, fields) => {
             if (error) {
                 return callback(error);
             } else {

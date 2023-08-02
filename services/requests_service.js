@@ -46,11 +46,11 @@ module.exports = {
     // get sender data by sender id join with users table
     getUserBySenderId: (id, callback) => {
         // sql join query
-        pool.query(`SELECT * FROM requests INNER JOIN user_list ON requests.sender_id = user_list.user_id WHERE sender_id = ?`, [id], (error, results, fields) => {
+        pool.query(`SELECT * FROM requests INNER JOIN user_list ON requests.receiver_id = user_list.user_id WHERE sender_id = ?`, [id], (error, results, fields) => {
             if (error) {
                 return callback(error);
             } else {
-                return callback(null, results[0]);
+                return callback(null, results);
             }
         });
     },
