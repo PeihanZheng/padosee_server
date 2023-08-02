@@ -1,4 +1,4 @@
-const { create, getUsers, getUserById, updateUser, verifyPassword, deleteUser, getUserByEmail } = require('../services/user_list_service.js');
+const { create, getUsers, getUserById, updateUser, verifyPassword, deleteUser, getUserByEmail,getUsersByEmail } = require('../services/user_list_service.js');
 const { sign } = require("jsonwebtoken");
 const expire = 43200;
 const multer = require("multer");
@@ -235,5 +235,23 @@ module.exports = {
                 }
             });
         });
-    }
+    },
+
+    getUsersByEmail: (req, res) => {
+        const email = req.params.email;
+        getUsersByEmail(email, (error, results) => {
+            if (error) {
+                console.log(error);
+                return res.json({
+                    success: 0,
+                    message: "Record not found..."
+                });
+            } else {
+                return res.json({
+                    success: 1,
+                    data: results
+                });
+            }
+        });
+    },
 };
