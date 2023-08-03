@@ -54,6 +54,16 @@ module.exports = {
             }
         });
     },
+
+    getUserReceiverId: (id, callback) => {
+        pool.query(`SELECT * FROM requests INNER JOIN user_list ON requests.sender_id = user_list.user_id WHERE receiver_id = ?`, [id], (error, results, fields) => {
+            if (error) {
+                return callback(error);
+            } else {
+                return callback(null, results);
+            }
+        });
+    },
     // get users accepted by sender id
     getUsersByAddStatus: (id, addStatus, callback) => {
         // sql join query
