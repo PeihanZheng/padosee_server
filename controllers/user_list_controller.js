@@ -3,6 +3,20 @@ const { sign } = require("jsonwebtoken");
 const expire = 43200;
 const multer = require("multer");
 const bcrypt = require("bcrypt");
+const nodemailer = require("nodemailer");
+const crypto = require("crypto");
+
+// upload images to assets folder
+const upload = multer({ storage: "uploads/" });
+
+// Nodemailer configuration
+const transporter = nodemailer.createTransport({
+    service: 'Gmail', // e.g., Gmail, Yahoo
+    auth: {
+        user: 'chittebabu@graymatics.com',
+        pass: 'Chittebabu@21'
+    }
+});
 
 module.exports = {
     createUser: (req, res) => {
@@ -52,7 +66,34 @@ module.exports = {
                     message: "Record not found..."
                 });
             } else {
-                return res.json({
+                console.log(results);
+                return res.status(200).json({
+                    success: 1,
+                    data: results
+                });
+            }
+        });
+    },
+    // get user by email
+    getUserByEmail: (req, res) => {
+        // get email from params
+        const email = req.params.email;
+
+        // get user by email
+        getUserByEmail(email, (error, results) => {
+            if (error) {
+                console.error(error);
+                res.status(500).json({
+                    success: 0,
+                    message: "Failed to get user..."
+                });
+            } else if (!results) {
+                res.status(400).json({
+                    success: 0,
+                    message: "User not found..."
+                });
+            } else {
+                res.status(200).json({
                     success: 1,
                     data: results
                 });
@@ -60,21 +101,50 @@ module.exports = {
         });
     },
     updateUser: (req, res) => {
+        // upload image to folder
+        upload.single('image');
+
+        // user id
+        const user_id = req.params.id;
+
+        // get request file
+        const image = req.file;
+        console.log(image);
+
         // request body
-        const body = req.body;
+        const body = req.body
+        if (body.constructor === Object && Object.keys(body).length === 0) {
+            return res.status(400).json({
+                success: 0,
+                message: "Request body is missing..."
+            });
+        }
+
+        // convert user id to integer
+        console.log(typeof(user_id));
+        const userId = parseInt(user_id, 10);
+        if (isNaN(userId)) {
+            return res.status(400).json({
+                success: 0,
+                message: "Invalid user id..."
+            })
+        }
+        console.log(userId);
 
         // update user
-        updateUser(body, (error, results) => {
+        updateUser(userId, { image, ...body }, (error, results) => {
             if (error) {
-                console.log(error);
+                // error handling
+                console.error(error);
                 res.status(500).json({
                     success: 0,
                     message: "Failed to update record..."
                 });
             } else {
-                return res.json({
+                // return success message
+                return res.status(200).json({
                     success: 1,
-                    message: "User updated successfully!"
+                    message: "Record updated successfully!"
                 });
             }
         });
@@ -255,4 +325,65 @@ module.exports = {
             }
         });
     },
+    // method to send reset password link to user email
+    sendResetPasswordLink: (req, res) => {
+        // get user email address from request body
+        const { email_address } = req.body;
+
+        // check if email address is empty
+        if (email_address === "") {
+            return res.status(400).json({
+                success: 0,
+                message: "Email address is required..."
+            });
+        }
+
+        // check if user exists
+        getUserByEmail(email_address, (error, results) => {
+            if (error) {
+                console.error(error);
+                return res.status(500).json({
+                    success: 0,
+                    message: "Error in sending request..."
+                });
+            } else {
+                // check if user exists
+                if (!results) {
+                    return res.status(400).json({
+                        success: 0,
+                        message: "User does not exist..."
+                    });
+                } else {
+                    // generate reset password token
+                    const resetPasswordToken = crypto.randomBytes(20).toString('hex');
+
+                    // update user record with reset password token
+                    updateUser(results.user_id, { reset_password_token: resetPasswordToken }, async (error, results) => {
+                        if (error) {
+                            console.error(error);
+                            return res.status(500).json({
+                                success: 0,
+                                message: "Error in sending request..."
+                            });
+                        } else {
+                            // send reset password link to user email
+                            const resetPasswordLink = `padosee/reset-password/${resetPasswordToken}`;
+                            const message = `
+                                <h1>Reset Password</h1>
+                                <p>Click on the link below to reset your password</p>
+                                <a href="${resetPasswordLink}">${resetPasswordLink}</a>
+                            `;
+                            await transporter.sendMail(email_address, "Reset Password", message);
+
+                            // return success message
+                            return res.status(200).json({
+                                success: 1,
+                                message: "Reset password link sent successfully!"
+                            });
+                        }
+                    });
+                }
+            }
+        });
+    }
 };
