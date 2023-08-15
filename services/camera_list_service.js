@@ -33,6 +33,16 @@ module.exports = {
             }
         });
     },
+    // get cameras by user id
+    getCamerasByUserId: (id, callback) => {
+        pool.query(`SELECT * FROM camera_list WHERE user_id = ?`, [id], (error, results, fields) => {
+            if (error) {
+                return callback(error);
+            } else {
+                return callback(null, results);
+            }
+        });
+    },
     // update camera
     updateCamera: (data, callback) => {
         pool.query(`UPDATE camera_list SET ? WHERE cam_id = ?`, [data, data.cam_id], (error, results, fields) => {
