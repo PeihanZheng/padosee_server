@@ -8,6 +8,7 @@ const analyticsRouter = require('./routes/analytics_list_route.js');
 const alertsRouter = require('./routes/alerts_list_route.js');
 const requestsRouter = require('./routes/requests_route.js');
 const messagesRouter = require('./routes/messages_route.js');
+const connectionRouter = require('./routes/connections_route.js');
 
 // import environment variables
 dotenv.config();
@@ -25,6 +26,7 @@ app.use('/analytics', analyticsRouter);
 app.use('/alerts', alertsRouter);
 app.use('/requests', requestsRouter);
 app.use('/messages', messagesRouter);
+app.use('/connections', connectionRouter);
 
 // listen to port
 app.listen(port, () => {
