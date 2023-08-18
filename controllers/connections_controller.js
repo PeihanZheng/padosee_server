@@ -1,5 +1,5 @@
 // import service modules
-const { create, getConnections, getConnectionsById, getConnectionsByCameraId, updateConnection, deleteConnection } = require('../services/connections_service.js');
+const { create, getConnections, getConnectionById, getConnectionsByCameraId, updateConnection, deleteConnection } = require('../services/connections_service.js');
 
 // export controller
 module.exports = {
@@ -53,7 +53,13 @@ module.exports = {
             if (error) {
                 // handle error
                 console.log(error);
-                return res.json({
+                return res.status(500).json({
+                    success: 0,
+                    message: "Record not found..."
+                });
+            } else if (!results) {
+                // handle empty results
+                return res.status(401).json({
                     success: 0,
                     message: "Record not found..."
                 });
@@ -77,6 +83,12 @@ module.exports = {
                 // handle error
                 console.log(error);
                 return;
+            } else if (results.length === 0) {
+                // handle empty results
+                return res.status(401).json({
+                    success: 0,
+                    message: "No records found..."
+                });
             } else {
                 // return success
                 return res.status(200).json({
