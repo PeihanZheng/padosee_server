@@ -1,4 +1,4 @@
-const { create, getUsers, getUserById, updateUser, verifyPassword, deleteUser, getUserByEmail } = require('../services/user_list_service.js');
+const { create, getUsers, getUserById, updateUser, verifyPassword, deleteUser, getUserByEmail, getUserByPhone } = require('../services/user_list_service.js');
 const { sign } = require("jsonwebtoken");
 const expire = 43200;
 const multer = require("multer");
@@ -94,6 +94,35 @@ module.exports = {
                 });
             } else {
                 res.status(200).json({
+                    success: 1,
+                    data: results
+                });
+            }
+        });
+    },
+    // get user by phone number
+    getUserByPhone: (req, res) => {
+        // get phone number from params
+        const phone = req.params.phone;
+
+        // use service to get user by phone number
+        getUserByPhone(phone, (error, results) => {
+            if (error) {
+                // error handling
+                console.error(error);
+                return res.status(500).json({
+                    success: 0,
+                    message: "Failed to get user..."
+                });
+            } else if (!results) {
+                // user not found
+                return res.status(400).json({
+                    success: 0,
+                    message: "User not found..."
+                });
+            } else {
+                // user found
+                return res.status(200).json({
                     success: 1,
                     data: results
                 });
