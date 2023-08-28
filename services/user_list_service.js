@@ -42,6 +42,17 @@ module.exports = {
             }
         });
     },
+    // get user by phone number
+    getUserByPhone: (phone, callback) => {
+        // sql query to get user by phone number
+        pool.query(`SELECT * FROM user_list WHERE phone = ?`, [phone], (error, results, fields) => {
+            if (error) {
+                return callback(error);
+            } else {
+                return callback(null, results[0]);
+            }
+        });
+    },
     updateUser: (data, callback) => {
         pool.query("UPDATE user_list SET ? WHERE user_id = ?", [data, data.user_id], (error, results, fields) => { 
             if (error) {
