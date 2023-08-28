@@ -1,6 +1,4 @@
 const pool = require("../dao/padosee_dao.js");
-const fs = require("fs");
-const path = require("path");
 const bcrypt = require("bcrypt");
 
 module.exports = {
@@ -50,6 +48,18 @@ module.exports = {
                 return callback(error);
             } else {
                 return callback(null, results[0]);
+            }
+        });
+    },
+    // get all phone numbers
+    getPhoneNumbers: callback => {
+        // sql query to get all phone numbers
+        pool.query("SELECT phone FROM user_list", [], (error, results, fields) => {
+            if (error) {
+                return callback(error);
+            } else {
+                console.log(results);
+                return callback(null, results);
             }
         });
     },
