@@ -296,17 +296,12 @@ module.exports = {
                     success: 0,
                     message: "Failed to delete record..."
                 });
-            } 
-            if (!results) {
+            } else {
                 return res.json({
-                    success: 0,
-                    message: "Record not found..."
+                    success: 1, 
+                    message: "User deleted successfully!"
                 });
             }
-            return res.json({
-                success: 1, 
-                message: "User deleted successfully!"
-            });
         });
     },
     login: (req, res) => {
