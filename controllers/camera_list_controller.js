@@ -72,7 +72,14 @@ module.exports = {
                 console.log(error);
                 res.status(500).json({
                     success: 0,
-                    message: "Failed to get record..."
+                    message: "Error in getting record..."
+                });
+            } else if (results.length === 0) {
+                // handle error
+                console.log(error);
+                res.status(500).json({
+                    success: 0,
+                    message: "Record not found..."
                 });
             } else {
                 return res.status(200).json({
@@ -94,7 +101,14 @@ module.exports = {
                 console.log(error);
                 res.status(500).json({
                     success: 0,
-                    message: "Failed to get record..."
+                    message: "Error in getting record..."
+                });
+            } else if (results.length === 0) {
+                // handle error
+                console.log(error);
+                res.status(500).json({
+                    success: 0,
+                    message: "Record not found..."
                 });
             } else {
                 // return results
