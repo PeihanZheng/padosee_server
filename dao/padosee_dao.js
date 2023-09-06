@@ -13,7 +13,7 @@ const pool = createPool({
     password: process.env.MYSQL_PASSWORD,
     database: process.env.MYSQL_DB,
     port: process.env.MYSQL_PORT,
-    connectionLimit: 100,
+    connectionLimit: 1000,
     ssl: false
 });
 
@@ -28,6 +28,8 @@ pool.getConnection((error, connection) => {
             console.error('Database has too many connections.');
         } else if (error.code === 'ECONNREFUSED') {
             console.error('Database connection was refused.');
+        }else{
+            console.error(error);
         }
     } else {
         console.log("Connected to MySQL database...");
