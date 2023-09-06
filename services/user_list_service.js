@@ -53,8 +53,8 @@ module.exports = {
             }
         });
     },
-    updateUser: (data, callback) => {
-        pool.query("UPDATE user_list SET ? WHERE user_id = ?", [data, data.user_id], (error, results, fields) => { 
+    updateUser: (user_id,data, callback) => {
+        pool.query("UPDATE user_list SET ? WHERE user_id = ?", [data,user_id], (error, results, fields) => { 
             if (error) {
                 return callback(error);
             } else {

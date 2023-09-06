@@ -7,7 +7,7 @@ const router = require("express").Router();
 router.get("/", getUsers);
 router.get("/phone-numbers", getAllPhoneNumbers);
 router.get("/get-users-with-status", getUsersWithRequestStatus);
-router.get("/:id", auth, getUserById);
+router.get("/:id", getUserById);
 router.get("/phone/:phone", getUserByPhone);
 router.post("/", createUser);
 router.post("/get-user-by-email", getUsersByEmail);

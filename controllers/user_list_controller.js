@@ -1,4 +1,4 @@
-const { create, getUsers, getUserById, updateUser, verifyPassword, deleteUser, getUserByEmail,getUserByPhone ,getPhoneNumbers} = require('../services/user_list_service.js');
+const { create, getUsers, getUserById, updateUser, verifyPassword, deleteUser, getUserByEmail,getUserByPhone ,getPhoneNumbers,getUsersWithRequestStatus} = require('../services/user_list_service.js');
 const { sign } = require("jsonwebtoken");
 const expire = 43200;
 const multer = require("multer");
@@ -168,7 +168,6 @@ module.exports = {
         }
 
         // convert user id to integer
-        console.log(typeof(user_id));
         const userId = parseInt(user_id, 10);
         if (isNaN(userId)) {
             return res.status(400).json({
@@ -350,7 +349,7 @@ module.exports = {
     getUsersByEmail: (req, res) => {
         const email = req.body.email;
         const user_id = req.body.user_id;
-        getUsersBygetUsersWithRequestStatusEmail(user_id,email, (error, results) => {
+        getUsersByEmail(user_id,email, (error, results) => {
             if (error) {
                 console.log(error);
                 return res.json({
