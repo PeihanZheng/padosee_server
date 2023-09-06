@@ -1,10 +1,11 @@
 // import methods
-const { createUser, getUsers, getUserById,getUsersByEmail,getUserByPhone, updateUser, updateUserPassword, deleteUser, login, sendResetPasswordLink } = require("../controllers/user_list_controller.js");
+const { createUser, getUsers, getUserById, getUserByPhone, getAllPhoneNumbers,getUsersByEmail,getUserByPhone, updateUser, updateUserPassword, deleteUser, login, sendResetPasswordLink } = require("../controllers/user_list_controller.js");
 const auth = require("../auth/auth_middleware.js");
 const router = require("express").Router();
 
 // routers
 router.get("/", getUsers);
+router.get("/phone-numbers", getAllPhoneNumbers);
 router.get("/:id", auth, getUserById);
 router.get("/phone/:phone", getUserByPhone);
 router.post("/", createUser);

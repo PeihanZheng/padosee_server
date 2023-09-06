@@ -1,4 +1,4 @@
-const { create, getUsers, getUserById, updateUser, verifyPassword, deleteUser, getUserByEmail,getUsersByEmail,getUserByPhone } = require('../services/user_list_service.js');
+const { create, getUsers, getUserById, updateUser, verifyPassword, deleteUser, getUserByEmail,getUsersByEmail,getUserByPhone ,getPhoneNumbers} = require('../services/user_list_service.js');
 const { sign } = require("jsonwebtoken");
 const expire = 43200;
 const multer = require("multer");
@@ -124,6 +124,33 @@ module.exports = {
                 // user found
                 return res.status(200).json({
                     success: 1,
+                    data: results
+                });
+            }
+        });
+    },
+    // get all phone numbers
+    getAllPhoneNumbers: (req, res) => {
+        // use service to get all phone numbers
+        getPhoneNumbers((error, results) => {
+            if (error) {
+                // error handling
+                console.error(error);
+                return res.status(500).json({
+                    success: 0,
+                    message: "Failed to get phone numbers..."
+                });
+            } else if (results.length === 0) {
+                // phone numbers not found
+                return res.status(400).json({
+                    success: 0,
+                    message: "Phone numbers not found..."
+                });
+            } else {
+                console.log(`Results: ${results}`);
+                // return the results
+                return res.status(200).json({
+                    success: 1, 
                     data: results
                 });
             }
@@ -269,17 +296,12 @@ module.exports = {
                     success: 0,
                     message: "Failed to delete record..."
                 });
-            } 
-            if (!results) {
+            } else {
                 return res.json({
-                    success: 0,
-                    message: "Record not found..."
+                    success: 1, 
+                    message: "User deleted successfully!"
                 });
             }
-            return res.json({
-                success: 1, 
-                message: "User deleted successfully!"
-            });
         });
     },
     login: (req, res) => {

@@ -1,5 +1,6 @@
 // get pool query from service
 const { create, getAlerts, getAlertById, updateAlert, deleteAlert } = require('../services/alerts_list_service.js');
+const socket = require('socket.io-client')('http://localhost:3000'); // change the port depending on the server
 
 // export controller
 module.exports = {
@@ -20,9 +21,12 @@ module.exports = {
                 res.status(200).json({
                     success: 1,
                     message: results
-                })
+                });
+
+                // send alert to client
+                socket.emit('alert', results);
             }
-        })
+        });
     },
     // get all alerts
     getAlerts: (req, res) => {
@@ -35,9 +39,12 @@ module.exports = {
                 res.json({
                     success: 1,
                     data: results
-                })
+                });
+
+                // send alerts to client
+                socket.emit('alerts', results);
             }
-        })
+        });
     },
     // get alert by id
     getAlertById: (req, res) => {

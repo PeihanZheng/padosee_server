@@ -3,8 +3,19 @@ const { verify } = require('jsonwebtoken');
 
 // export module 
 module.exports = (req, res, next) => {
+    // define authorization header
+    const authHeader = req.headers.authorization;
+
+    // check if authorization header exists
+    if (!authHeader) {
+        return res.status(401).json({
+            success: 0,
+            message: "Access denied!"
+        });
+    }
+
     // get token from header
-    const token = req.headers.authorization.split(" ")[1];
+    const token = authHeader.split(" ")[1];
 
     // check if token exists
     if (!token) {
