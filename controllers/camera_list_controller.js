@@ -1,5 +1,5 @@
 // get pool query from service
-const { create, getCameras, getCameraById, getCamerasByUserId, updateCamera, deleteCamera } = require('../services/camera_list_service.js');
+const { create, getCameras, getCameraById, getCamerasByUserId, getCameraBySenderId, updateCamera, deleteCamera } = require('../services/camera_list_service.js');
 
 // export controller
 module.exports = {
@@ -75,6 +75,29 @@ module.exports = {
                     message: "Failed to get record..."
                 });
             } else {
+                return res.status(200).json({
+                    success: 1,
+                    data: results
+                });
+            }
+        });
+    },
+    // get camera by sender id from requests table
+    getCameraBySenderId: (req, res) => {
+        // get the id from the request
+        const id = req.params.id;
+
+        // get camera by sender id
+        getCameraBySenderId(id, (error, results) => {
+            if (error) {
+                // handle error
+                console.log(error);
+                res.status(500).json({
+                    success: 0,
+                    message: "Failed to get record..."
+                });
+            } else {
+                // return results
                 return res.status(200).json({
                     success: 1,
                     data: results
