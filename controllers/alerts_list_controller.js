@@ -1,5 +1,5 @@
 // get pool query from service
-const { create, getAlerts, getAlertById, updateAlert, deleteAlert } = require('../services/alerts_list_service.js');
+const { create, getAlerts, getAlertById, getAlertByUserId, updateAlert, deleteAlert } = require('../services/alerts_list_service.js');
 const socket = require('socket.io-client')('http://localhost:3000'); // change the port depending on the server
 
 // export controller
@@ -67,10 +67,51 @@ module.exports = {
             }
         });
     },
+    // get alerts by user id
+    getAlertByUserId: (req, res) => {
+        // get id from request
+        const id = req.params.id;
+
+        // get alert by user id
+        getAlertByUserId(id, (error, results) => {
+            if (error) {
+                // handle error
+                console.log(error);
+                res.status(500).json({
+                    success: 0,
+                    message: "Failed to get record..."
+                });
+            } else if (!results) {
+                // handle error
+                res.status(404).json({
+                    success: 0,
+                    message: "Record not found..."
+                });
+            } else {
+                // send results
+                res.status(200).json({
+                    success: 1,
+                    data: results
+                });
+            }
+        });
+    },
     // update alert
     updateAlert: (req, res) => {
+        // get id from request
+        const id = req.params.id;
+        const alertsId = parseInt(id, 10);
+
         // get request body
         const body = req.body;
+
+        // check if id is valid
+        if (isNaN(alertsId)) {
+            res.status(400).json({
+                success: 0,
+                message: "Invalid alert id..."
+            });
+        }
 
         // update alert
         updateAlert(body, (error, results) => {

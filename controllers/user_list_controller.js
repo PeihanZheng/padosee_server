@@ -168,7 +168,7 @@ module.exports = {
         console.log(image);
 
         // request body
-        const body = req.body
+        const body = req.body;
         if (body.constructor === Object && Object.keys(body).length === 0) {
             return res.status(400).json({
                 success: 0,
