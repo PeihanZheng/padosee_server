@@ -102,27 +102,6 @@ module.exports = {
             }
         });
     },
-    getCameraByLocation: (req, res) => {
-        // access id from request
-        const id = req.params.id;
-        const location = req.params.location;
-
-        // get camera by id
-        getCameraByLocation(id,location, (error, results) => {
-            if (error) {
-                console.log(error);
-                return res.json({
-                    success: 0,
-                    message: "Record not found..."
-                });
-            } else {
-                return res.json({
-                    success: 1,
-                    data: results
-                });
-            }
-        });
-    },
     // update camera
     updateCamera: (req, res) => {
         // request body
@@ -164,5 +143,26 @@ module.exports = {
                 });
             }
         });
-    }
+    },
+    getCameraByLocation: (req, res) => {
+        // access id from request
+        const id = req.params.id;
+        const location = req.params.location;
+
+        // get camera by id
+        getCameraByLocation(id,location, (error, results) => {
+            if (error) {
+                console.log(error);
+                return res.json({
+                    success: 0,
+                    message: "Record not found..."
+                });
+            } else {
+                return res.json({
+                    success: 1,
+                    data: results
+                });
+            }
+        });
+    },
 }

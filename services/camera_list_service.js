@@ -43,15 +43,6 @@ module.exports = {
             }
         });
     },
-    getCameraByLocation: (id,location, callback) => {
-        pool.query(`SELECT * FROM camera_list WHERE user_id = ? and cam_location = ?`, [id,location], (error, results, fields) => {
-            if (error) {
-                return callback(error);
-            } else {
-                return callback(null, results);
-            }
-        });
-    },
     // update camera
     updateCamera: (data, callback) => {
         pool.query(`UPDATE camera_list SET ? WHERE cam_id = ?`, [data, data.cam_id], (error, results, fields) => {
@@ -71,5 +62,13 @@ module.exports = {
                 return callback(null, results[0]);
             }
         });
-    }
+    },getCameraByLocation: (id,location, callback) => {
+        pool.query(`SELECT * FROM camera_list WHERE user_id = ? and cam_location = ?`, [id,location], (error, results, fields) => {
+            if (error) {
+                return callback(error);
+            } else {
+                return callback(null, results);
+            }
+        });
+    },
 }

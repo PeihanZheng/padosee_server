@@ -9,9 +9,9 @@ router.post('/', createCamera);
 router.get('/', getCameras);
 router.get('/:id', getCameraById);
 router.get('/user/:id', getCameraByUserId);
-router.get('/user/:id/location/:location', getCameraByLocation);
 router.put('/', updateCamera);
 router.delete('/:id', deleteCamera);
+router.get('/user/:id/location/:location', getCameraByLocation);
 
 // export router
 module.exports = router;
