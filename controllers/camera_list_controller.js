@@ -82,26 +82,6 @@ module.exports = {
             }
         });
     },
-    getCameraByUserId: (req, res) => {
-        // access id from request
-        const id = req.params.id;
-
-        // get camera by id
-        getCameraByUserId(id, (error, results) => {
-            if (error) {
-                console.log(error);
-                return res.json({
-                    success: 0,
-                    message: "Record not found..."
-                });
-            } else {
-                return res.json({
-                    success: 1,
-                    data: results
-                });
-            }
-        });
-    },
     //  get camera by sender id from requests table
     getCameraBySenderId: (req, res) => {
     // get the id from the request
