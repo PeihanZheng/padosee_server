@@ -43,6 +43,18 @@ module.exports = {
             }
         });
     },
+    // get camera where user id is equal to sender id in requests table
+    getCameraBySenderId: (id, callback) => {
+        // sql query
+        pool.query(`SELECT * FROM camera_list INNER JOIN requests ON camera_list.user_id = requests.sender_id WHERE user_id = ?`, [id], (error, results, fields) => {
+            if (error) {
+                return callback(error);
+            } else {
+                // return results
+                return callback(null, results);
+            }
+        });
+    },
     // update camera
     updateCamera: (data, callback) => {
         pool.query(`UPDATE camera_list SET ? WHERE cam_id = ?`, [data, data.cam_id], (error, results, fields) => {

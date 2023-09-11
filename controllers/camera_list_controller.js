@@ -102,6 +102,57 @@ module.exports = {
             }
         });
     },
+    //  get camera by sender id from requests table
+    getCameraBySenderId: (req, res) => {
+    // get the id from the request
+    const id = req.params.id;
+
+    // get camera by sender id
+        getCameraBySenderId(id, (error, results) => {
+            if (error) {
+                // handle error
+                console.log(error);
+                res.status(500).json({
+                    success: 0,
+                    message: "Error in getting record..."
+                });
+            } else if (results.length === 0) {
+                // handle error
+                console.log(error);
+                res.status(500).json({
+                    success: 0,
+                    message: "Record not found..."
+                });
+            } else {
+                // return results
+                return res.status(200).json({
+                    success: 1,
+                    data: results
+                });
+            }
+        });
+    },
+    getCameraByLocation: (req, res) => {
+        // access id from request
+        const id = req.params.id;
+        const location = req.params.location;
+
+        // get camera by id
+        getCameraByLocation(id,location, (error, results) => {
+            if (error) {
+                console.log(error);
+                return res.json({
+                    success: 0,
+                    message: "Record not found..."
+                });
+            } else {
+                return res.json({
+                    success: 1,
+                    data: results
+                });
+            }
+        });
+    },
     // update camera
     updateCamera: (req, res) => {
         // request body
@@ -143,26 +194,5 @@ module.exports = {
                 });
             }
         });
-    },
-    getCameraByLocation: (req, res) => {
-        // access id from request
-        const id = req.params.id;
-        const location = req.params.location;
-
-        // get camera by id
-        getCameraByLocation(id,location, (error, results) => {
-            if (error) {
-                console.log(error);
-                return res.json({
-                    success: 0,
-                    message: "Record not found..."
-                });
-            } else {
-                return res.json({
-                    success: 1,
-                    data: results
-                });
-            }
-        });
-    },
+    }
 }
