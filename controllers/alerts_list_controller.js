@@ -1,5 +1,5 @@
 // get pool query from service
-const { create, getAlerts, getAlertById, getAlertByUserId, updateAlert, deleteAlert } = require('../services/alerts_list_service.js');
+const { create, getAlerts, getAlertById, getAlertByUserId, getAlertsByPrimaryUser, updateAlert, deleteAlert } = require('../services/alerts_list_service.js');
 const socket = require('socket.io-client')('http://localhost:3000'); // change the port depending on the server
 
 // export controller
@@ -82,6 +82,35 @@ module.exports = {
                     message: "Failed to get record..."
                 });
             } else if (!results) {
+                // handle error
+                res.status(404).json({
+                    success: 0,
+                    message: "Record not found..."
+                });
+            } else {
+                // send results
+                res.status(200).json({
+                    success: 1,
+                    data: results
+                });
+            }
+        });
+    },
+    // get alerts by primary user id
+    getAlertsByPrimaryUser: (req, res) => {
+        // get id from request
+        const id = req.params.id;
+
+        // get alerts by primary user id
+        getAlertsByPrimaryUser(id, (error, results) => {
+            if (error) {
+                // handle error
+                console.log(error);
+                res.status(500).json({
+                    success: 0,
+                    message: "Failed to get record..."
+                });
+            } else if (results.length === 0) {
                 // handle error
                 res.status(404).json({
                     success: 0,
