@@ -46,7 +46,18 @@ module.exports = {
     // get alerts by primary user id from connections table
     getAlertsByPrimaryUser: (id, callback) => {
         // sql query
-        pool.query(`SELECT * FROM alerts_list INNER JOIN connections ON alerts_list.cam_id = connections.camera_id WHERE connections.primary_user = ?`, [id], (error, results, fields) => {
+        pool.query(`SELECT * FROM alerts_list INNER JOIN connections ON alerts_list.cam_id = connections.camera_id INNER JOIN camera_list ON camera_list.cam_id = connections.camera_id WHERE connections.primary_user = ?`, [id], (error, results, fields) => {
+            // check for error
+            if (error) {
+                return callback(error);
+            } else {
+                return callback(null, results);
+            }
+        });
+    },
+    getAlertsBySecondaryUser: (id, callback) => {
+        // sql query
+        pool.query(`SELECT * FROM alerts_list INNER JOIN connections ON alerts_list.cam_id = connections.camera_id INNER JOIN camera_list ON camera_list.cam_id = connections.camera_id WHERE connections.secondary_user = ?`, [id], (error, results, fields) => {
             // check for error
             if (error) {
                 return callback(error);
