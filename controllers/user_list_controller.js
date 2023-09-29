@@ -1,4 +1,4 @@
-const { create, getUsers, getUserById, updateUser, verifyPassword, deleteUser, getUserByEmail, getUserByPhone, getPhoneNumbers } = require('../services/user_list_service.js');
+const { create, getUsers, getUserById, updateUser, verifyPassword, deleteUser, getUserByEmail,getUserByPhone ,getPhoneNumbers,getUsersWithRequestStatus} = require('../services/user_list_service.js');
 const { sign } = require("jsonwebtoken");
 const expire = 43200;
 const multer = require("multer");
@@ -6,8 +6,6 @@ const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 const crypto = require("crypto");
 
-// upload images to assets folder
-const upload = multer({ storage: "uploads/" });
 
 // Nodemailer configuration
 const transporter = nodemailer.createTransport({
@@ -56,6 +54,7 @@ module.exports = {
             }
         });
     },
+    
     getUserById: (req, res) => {
         const id = req.params.id;
         getUserById(id, (error, results) => {
@@ -124,7 +123,7 @@ module.exports = {
                 // user found
                 return res.status(200).json({
                     success: 1,
-                    data: results
+                    user: results
                 });
             }
         });
@@ -157,16 +156,8 @@ module.exports = {
         });
     },
     updateUser: (req, res) => {
-        // upload image to folder
-        upload.single('image');
-
         // user id
         const user_id = req.params.id;
-
-        // get request file
-        const image = req.file;
-        console.log(image);
-
         // request body
         const body = req.body;
         if (body.constructor === Object && Object.keys(body).length === 0) {
@@ -177,7 +168,6 @@ module.exports = {
         }
 
         // convert user id to integer
-        console.log(typeof(user_id));
         const userId = parseInt(user_id, 10);
         if (isNaN(userId)) {
             return res.status(400).json({
@@ -185,10 +175,8 @@ module.exports = {
                 message: "Invalid user id..."
             })
         }
-        console.log(userId);
 
-        // update user
-        updateUser(userId, { image, ...body }, (error, results) => {
+        updateUser(userId,body, (error, results) => {
             if (error) {
                 // error handling
                 console.error(error);
@@ -357,11 +345,48 @@ module.exports = {
             });
         });
     },
+
+    getUsersByEmail: (req, res) => {
+        const email = req.body.email;
+        const user_id = req.body.user_id;
+        getUsersByEmail(user_id,email, (error, results) => {
+            if (error) {
+                console.log(error);
+                return res.json({
+                    success: 0,
+                    message: "Record not found..."
+                });
+            } else {
+                return res.json({
+                    success: 1,
+                    data: results
+                });
+            }
+        });
+    },
+    getUsersWithRequestStatus: (req, res) => {
+        const user_id = req.query.user_id; 
+        getUsersWithRequestStatus(user_id,(error, results) => {
+            if (error) {
+                console.log(error);
+                res.status(500).json({
+                    success: 0,
+                    message: "Failed to get records..."
+                })
+                return;
+            } else {
+                return res.json({
+                    success: 1,
+                    data: results
+                });
+            }
+        });
+    },
     // method to send reset password link to user email
     sendResetPasswordLink: (req, res) => {
         // get user email address from request body
         const { email_address } = req.body;
-
+      
         // check if email address is empty
         if (email_address === "") {
             return res.status(400).json({
@@ -405,8 +430,13 @@ module.exports = {
                                 <p>Click on the link below to reset your password</p>
                                 <a href="${resetPasswordLink}">${resetPasswordLink}</a>
                             `;
-                            await transporter.sendMail(email_address, "Reset Password", message);
-
+                            try {
+                                const mailResult =await transporter.sendMail({to:email_address, subject:"Reset Password", raw:message,from:'chittebabu@graymatics.com'});
+                                console.log(mailResult);
+                            } catch (error) {
+                                console.log(error);
+                            }
+                         
                             // return success message
                             return res.status(200).json({
                                 success: 1,

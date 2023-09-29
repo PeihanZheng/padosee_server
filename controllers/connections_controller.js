@@ -1,5 +1,5 @@
 // import service modules
-const { create, getConnections, getConnectionById, getConnectionsByCameraId, updateConnection, deleteConnection } = require('../services/connections_service.js');
+const { create,createMultiple, getConnections, getConnectionById, getConnectionsByCameraId, updateConnection, deleteConnection, getConnectionByRequestId, getCameraWithAssignStatus } = require('../services/connections_service.js');
 
 // export controller
 module.exports = {
@@ -10,6 +10,36 @@ module.exports = {
 
         // create new connection
         create(body, (error, results) => {
+            if (error) {
+                // handle error
+                console.log(error);
+                return res.status(500).json({
+                    success: 0,
+                    message: "Failed to insert record..."
+                });
+            } else {
+                // return success
+                return res.status(200).json({
+                    success: 1,
+                    message: results
+                });
+            }
+        });
+    },
+    createConnections: (req, res) => {
+        // get request body
+        const body = req.body;
+        const values=[]
+        body.camera_ids.forEach(element => {
+            values.push({
+                "request_id":body.request_id,
+                "camera_id":element
+            })
+        });
+        // create new connection
+   
+        // create new connection
+        createMultiple(values, (error, results) => {
             if (error) {
                 // handle error
                 console.log(error);
@@ -143,5 +173,60 @@ module.exports = {
                 });
             }
         });
-    }
+    },
+    getConnectionByRequestId: (req, res) => {
+        // access id from request
+        const id = req.params.id;
+
+        // get connection by id
+        getConnectionByRequestId(id, (error, results) => {
+            if (error) {
+                // handle error
+                console.log(error);
+                return res.status(500).json({
+                    success: 0,
+                    message: "Record not found..."
+                });
+            } else if (!results) {
+                // handle empty results
+                return res.status(401).json({
+                    success: 0,
+                    message: "Record not found..."
+                });
+            } else {
+                // return success
+                return res.status(200).json({
+                    success: 1,
+                    data: results
+                });
+            }
+        });
+    },
+    getCameraWithAssignStatus: (req, res) => {
+        // access id from request
+        const body = req.body;  
+        // get connection by id
+        getCameraWithAssignStatus(body, (error, results) => {
+            if (error) {
+                // handle error
+                console.log(error);
+                return res.status(500).json({
+                    success: 0,
+                    message: "Record not found..."
+                });
+            } else if (!results) {
+                // handle empty results
+                return res.status(401).json({
+                    success: 0,
+                    message: "Record not found..."
+                });
+            } else {
+                // return success
+                return res.status(200).json({
+                    success: 1,
+                    data: results
+                });
+            }
+        });
+    },
 }

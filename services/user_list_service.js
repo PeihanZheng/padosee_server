@@ -3,17 +3,7 @@ const bcrypt = require("bcrypt");
 
 module.exports = {
     create: (data, callback) => {
-        // hash the password
-        bcrypt.hash(data.user_password, 10, (error, hash) => {
-            if (error) {
-                return callback(error);
-            } else {
-                // replace the password with the hash
-                data.user_password = hash;
-            }
-        });
-
-        // sql query to insert data into user_list table
+            // sql query to insert data into user_list table
         pool.query(`INSERT INTO user_list SET ?`, [data], (error, results, fields) => {
             if (error) {
                 return callback(error);
@@ -63,8 +53,8 @@ module.exports = {
             }
         });
     },
-    updateUser: (data, callback) => {
-        pool.query("UPDATE user_list SET ? WHERE user_id = ?", [data, data.user_id], (error, results, fields) => { 
+    updateUser: (user_id,data, callback) => {
+        pool.query("UPDATE user_list SET ? WHERE user_id = ?", [data,user_id], (error, results, fields) => { 
             if (error) {
                 return callback(error);
             } else {
@@ -72,6 +62,7 @@ module.exports = {
             }
         });
     },
+    
     // method to verify user password
     verifyPassword: (email, password, callback) => {
         pool.query("SELECT * FROM user_list WHERE email_address = ?", [email], (error, results, fields) => {
@@ -110,6 +101,24 @@ module.exports = {
                 return callback(error);
             } else {
                 return callback(null, results[0]);
+            }
+        })
+    },
+    getUsersByEmail: (user_id,email, callback) => {
+        pool.query("SELECT  DISTINCT * FROM user_list u LEFT JOIN (select * from requests where sender_id = ?) as rq ON u.user_id=rq.receiver_id WHERE u.email_address = ?", [user_id,email], (error, results, fields) => {
+            if (error) {
+                return callback(error);
+            } else {
+                return callback(null, results);
+            }
+        })
+    },
+    getUsersWithRequestStatus: (user_id, callback) => {
+        pool.query("SELECT  DISTINCT * FROM user_list u LEFT JOIN (select * from requests where sender_id = ?) as rq ON u.user_id=rq.receiver_id ", [user_id], (error, results, fields) => {
+            if (error) {
+                return callback(error);
+            } else {
+                return callback(null, results);
             }
         })
     }
