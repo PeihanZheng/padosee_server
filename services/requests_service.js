@@ -1,6 +1,6 @@
 // import pool
 const pool = require('../dao/padosee_dao');
-
+const {deleteConnectionByRequest } = require('../services/connections_service.js');
 // export queries
 module.exports = {
     // insert request
@@ -97,6 +97,7 @@ module.exports = {
     }, 
     // delete request
     deleteRequest: (id, callback) => {
+        deleteConnectionByRequest(id, (error, results) => {})
         pool.query(`DELETE FROM requests WHERE request_id = ?`, [id], (error, results, fields) => {
             if (error) {
                 return callback(error);

@@ -97,6 +97,19 @@ module.exports = {
       }
     );
   },
+  deleteConnectionByRequest: (request_id, callback) => {
+    pool.query(
+      `DELETE FROM connections WHERE request_id = ?`,
+      [request_id],
+      (error, results, fields) => {
+        if (error) {
+          return callback(error);
+        } else {
+          return callback(null, results[0]);
+        }
+      }
+    );
+  },
   // get connection by id
   getConnectionByRequestId: (id, callback) => {
     pool.query(
