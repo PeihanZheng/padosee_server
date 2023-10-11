@@ -1,6 +1,6 @@
 // get pool query from service
 const { create, getAlerts, getAlertById, getAlertByUserId, getAlertsByPrimaryUser, updateAlert, deleteAlert } = require('../services/alerts_list_service.js');
-const socket = require('socket.io-client')('http://localhost:3000'); // change the port depending on the server
+const socket = require('socket.io-client')('http://localhost:5500'); // change the port depending on the server
 
 // export controller
 module.exports = {

@@ -5,7 +5,7 @@ const pool = require("../dao/padosee_dao.js");
 module.exports = {
     // insert alert
     create: (data, callback) => {
-        pool.query(`INSERT INTO alerts_list SET ? WHERE alerts_id = ?`, [data, data.alerts_id], (error, results, fields) => {
+        pool.query(`INSERT INTO alerts_list SET ?`, [data], (error, results, fields) => {
             if (error) {
                 return callback(error);
             } else {
@@ -35,7 +35,7 @@ module.exports = {
     },
     // get alert by user id from user table
     getAlertByUserId: (id, callback) => {
-        pool.query(`SELECT * FROM alerts_list INNER JOIN camera_list ON alerts_list.cam_id = camera_list.cam_id INNER JOIN user_list ON camera_list.user_id = user_list.user_id WHERE user_list.user_id = ?`, [id], (error, results, fields) => {
+        pool.query(`SELECT * FROM alerts_list INNER JOIN camera_list ON alerts_list.cam_id = camera_list.cam_id WHERE camera_list.user_id = ?`, [id], (error, results, fields) => {
             if (error) {
                 return callback(error);
             } else {
