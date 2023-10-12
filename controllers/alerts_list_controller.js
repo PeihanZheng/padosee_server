@@ -81,7 +81,7 @@ module.exports = {
                     success: 0,
                     message: "Failed to get record..."
                 });
-            } else if (!results) {
+            } else if (!results || results.length === 0) {
                 // handle error
                 res.status(404).json({
                     success: 0,

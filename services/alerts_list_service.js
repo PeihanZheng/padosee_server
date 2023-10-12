@@ -35,11 +35,11 @@ module.exports = {
     },
     // get alert by user id from user table
     getAlertByUserId: (id, callback) => {
-        pool.query(`SELECT * FROM alerts_list INNER JOIN camera_list ON alerts_list.cam_id = camera_list.cam_id WHERE camera_list.user_id = ?`, [id], (error, results, fields) => {
+        pool.query(`SELECT alerts_list.alerts_id, alerts_list.time_detected, alerts_list.analytics_id, alerts_list.cam_id FROM alerts_list INNER JOIN camera_list ON alerts_list.cam_id = camera_list.cam_id WHERE camera_list.user_id = ?`, [id], (error, results, fields) => {
             if (error) {
                 return callback(error);
             } else {
-                return callback(null, results[0]);
+                return callback(null, results);
             }
         });
     },
