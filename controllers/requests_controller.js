@@ -83,7 +83,7 @@ module.exports = {
                 });
             } else if (results.length === 0) {
                 // not found message
-                res.status(404).json({
+                res.status(500).json({
                     success: 0, 
                     message: 'Record not found...'
                 });
