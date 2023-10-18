@@ -1,5 +1,5 @@
 // import pool queries from service
-const { create, getRequests, getRequestById, getRequestsBySenderId, getRequestsByReceiverId, getUserBySenderId, getUsersByAddStatus, updateRequest, deleteRequest } = require('../services/requests_service');
+const { create, getRequests, getRequestById, getRequestsBySenderId, getRequestsByReceiverId, getUserBySenderId, getUserByRecevierId, getUsersByAddStatus, updateRequest, deleteRequest } = require('../services/requests_service');
 
 // export controller
 module.exports = {
@@ -77,7 +77,7 @@ module.exports = {
             if (error) {
                 // handle error
                 console.log(error);
-                res.status(500).json({
+                res.status(401).json({
                     success: 0, 
                     message: 'Error fetching records...'
                 });
@@ -149,6 +149,33 @@ module.exports = {
                 // success message
                 res.status(200).json({
                     success: 1, 
+                    data: results
+                });
+            }
+        });
+    },
+    // get user by receiver id
+    getUserByReceiverId: (req, res) => {
+        // get id from params
+        const id = req.params.id;
+
+        // use service method
+        getUserByRecevierId(id, (error, results) => {
+            if (error) {
+                // handle error
+                console.error(error);
+                res.status(401).json({
+                    success: 0,
+                    message: 'Error in fetching data...'
+                });
+            } else if (results.length === 0) {
+                res.status(500).json({
+                    success: 0,
+                    message: 'No data found...'
+                });
+            } else {
+                res.status(200).json({
+                    success: 1,
                     data: results
                 });
             }
