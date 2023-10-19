@@ -61,7 +61,7 @@ module.exports = {
             if (error) {
                 return callback(error);
             } else {
-                return callback(null, results[0]);
+                return callback(null, results);
             }
         });
     },
