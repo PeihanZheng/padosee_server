@@ -89,6 +89,48 @@ module.exports = {
             }
         });
     },
+    // get cameras by user id and location
+    getCamerasByUserIdAndLocation: (req, res) => {
+        // access id from request
+        const id = req.params.id;
+        // access location from request
+        const location = req.params.location;
+
+        // get camera by user id
+        getCamerasByUserId(id, (error, results) => {
+            if (error) {
+                // handle error
+                console.log(error);
+                res.status(500).json({
+                    success: 0,
+                    message: "Error in getting record..."
+                });
+            } else if (results.length === 0) {
+                // handle error
+                console.log(error);
+                res.status(500).json({
+                    success: 0,
+                    message: "Record not found..."
+                });
+            } else {
+                const filteredResult = results.filter(item => item.cam_location && item.cam_location.toUpperCase()  === location.toUpperCase());
+                
+                if (filteredResult.length === 0) {
+                    // handle error
+                    console.log(error);
+                    res.status(500).json({
+                        success: 0,
+                        message: "Record not found..."
+                    });
+                } else {                
+                    return res.status(200).json({
+                        success: 1,
+                        data: filteredResult
+                    });
+                }
+            }
+        });
+    },
     // get camera by sender id from requests table
     getCameraBySenderId: (req, res) => {
         // get the id from the request
