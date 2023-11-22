@@ -77,7 +77,7 @@ module.exports = {
             } else if (results.length === 0) {
                 // handle error
                 console.log(error);
-                res.status(500).json({
+                res.status(404).json({
                     success: 0,
                     message: "Record not found..."
                 });
@@ -108,7 +108,7 @@ module.exports = {
             } else if (results.length === 0) {
                 // handle error
                 console.log(error);
-                res.status(500).json({
+                res.status(404).json({
                     success: 0,
                     message: "Record not found..."
                 });
@@ -118,7 +118,7 @@ module.exports = {
                 if (filteredResult.length === 0) {
                     // handle error
                     console.log(error);
-                    res.status(500).json({
+                    res.status(404).json({
                         success: 0,
                         message: "Record not found..."
                     });
@@ -148,7 +148,7 @@ module.exports = {
             } else if (results.length === 0) {
                 // handle error
                 console.log(error);
-                res.status(500).json({
+                res.status(404).json({
                     success: 0,
                     message: "Record not found..."
                 });
