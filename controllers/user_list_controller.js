@@ -23,22 +23,77 @@ module.exports = {
         // request body
         const body = req.body;
 
+        if(!body.first_name){
+            return res.status(500).json({
+                success: 0,
+                message: `First name required, field 'first_name'`
+            });
+        }
+
+        if(!body.last_name){
+            return res.status(500).json({
+                success: 0,
+                message: `Last name required, field 'last_name'`
+            });
+        }
+
+        if(!body.user_password){
+            return res.status(500).json({
+                success: 0,
+                message: `Password required, field 'user_password'`
+            });
+        }
+
+        if(!body.user_type){
+            return res.status(500).json({
+                success: 0,
+                message: `User type required, field 'user_type'`
+            });
+        }
+
+        if(!body.phone){
+            return res.status(500).json({
+                success: 0,
+                message: `Phone number required, field 'phone'`
+            });
+        }
+
+        if(!body.email_address){
+            return res.status(500).json({
+                success: 0,
+                message: `Email address required, field 'email_address'`
+            });
+        }
+
         // create new user
         create(body, (error, results) => {
             if (error) {
                 console.log(error);
-                return res.status(500).json({
-                    success: 0,
-                    message: "Failed to insert record...."
-                });
+                if(error.userFound){
+                    return res.status(500).json({
+                        success: 0,
+                        message: "User already exists with the email id: " + body.email_address
+                    })
+                } else if(error.phoneFound){
+                    return res.status(500).json({
+                        success: 0,
+                        message: "User already exists with the phone no: " + body.phone
+                    })
+                } else {
+                    return res.status(500).json({
+                        success: 0,
+                        message: "Failed to create new user"
+                    });
+                }
             } else {
                 return res.status(200).json({
                     success: 1,
-                    message: results
+                    message: "New User successfully created"
                 });
             }
         });
     },
+
     getUsers: (req, res) => {
         getUsers((error, results) => {
             if (error) {
